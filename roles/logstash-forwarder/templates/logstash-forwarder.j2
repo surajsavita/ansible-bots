@@ -1,0 +1,15 @@
+{
+  "network": {
+    "servers": [ "{{ config[ansible_ec2_placement_availability_zone]['logstash_endpoint'] }}" ],
+    "timeout": {{ timeout }},
+    "ssl ca": "{{ cert_path }}"
+  },
+  "files": [
+    {
+      "paths": [
+        "{{ path }}"
+       ],
+      "fields": { "type": "{{ app_name }}_access" }
+    }
+   ]
+}

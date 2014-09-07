@@ -1,0 +1,27 @@
+---
+
+- name: Gather EC2 facts for the instance
+  action: ec2_facts
+
+- name: Add Elasticsearch repo key
+  apt_key: url=http://packages.elasticsearch.org/GPG-KEY-elasticsearch state=present
+
+- name: Add logstash-forwarder repository in source repo
+  apt_repository: repo='deb http://packages.elasticsearch.org/logstashforwarder/debian stable main' state=present update_cache=yes mode=420
+
+- name: Install logstash-forwarder from repository
+  apt: name=logstash-forwarder state=present
+
+- name: Create Cert directory for logstash-forwarder
+  file: path=/opt/logstash-forwarder/certs owner=root group=root mode=0755 state=directory
+
+- name: Copy SSL Certificate for secure communication with Logstash
+  copy: src=logstash-forwarder.crt dest=/opt/logstash-forwarder/certs owner=root group=root mode=0644
+
+- name: Copy logstash-forwarder config File
+  template: src=logstash-forwarder.j2 dest=/etc/logstash-forwarder owner=root group=root mode=0644
+  notify: restart logstash-forwarder
+
+- name: Start logstash-forwarder service
+  service: name=logstash-forwarder state=started
+

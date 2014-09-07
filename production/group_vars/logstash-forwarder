@@ -1,0 +1,11 @@
+---
+
+
+cert_path: "/opt/logstash-forwarder/certs/logstash-forwarder.crt"
+timeout: 15
+path: /var/log/nginx/access.log
+config:
+    ap-southeast-1a:
+        logstash_endpoint: "10.0.x.y:5043"
+    ap-southeast-1b:
+        logstash_endpoint: "10.0.x.z:5043"

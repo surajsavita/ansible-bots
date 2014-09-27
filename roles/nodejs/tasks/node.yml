@@ -1,0 +1,21 @@
+---
+
+- name: Install gcc, g++, make
+  apt: name={{ item }} state=present
+  with_items:
+  - gcc
+  - g++
+  - make
+
+- name: Copy node install script
+  copy: src=install_node.sh dest=/root/ owner=root group=root mode=0744
+
+- name: Checking installed version of node.js
+  shell: /usr/bin/test "$(node -v 2> /dev/null)" = v{{node_version}}
+  register: wanted_version_installed
+  ignore_errors: True
+  always_run: yes
+
+- name: Install node on the instance
+  shell: /root/install_node.sh {{ node_version }} chdir=/root/
+  when: wanted_version_installed.rc == 1
